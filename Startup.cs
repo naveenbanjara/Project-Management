@@ -33,7 +33,7 @@ namespace Project_Management
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ProjectContext>();
             services.AddControllersWithViews();
         }
 

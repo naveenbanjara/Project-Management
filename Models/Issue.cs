@@ -19,7 +19,7 @@ namespace Project_Management.Models
         public status Status { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public List<IFormFile>? attachments { get; set; }
+        public string? attachment { get; set; }
         public Project Project { get; set; }
         public int ProjectID { get; set; }
     }
