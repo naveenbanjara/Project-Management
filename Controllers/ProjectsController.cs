@@ -34,6 +34,8 @@ namespace Project_Management.Controllers
             }
 
             var project = await _context.Projects
+                .Include(p=>p.Issues)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (project == null)
             {
