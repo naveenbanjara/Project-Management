@@ -20,10 +20,21 @@ namespace Project_Management.Controllers
         }
 
         // GET: Projects
-        public async Task<IActionResult> Index(string sortOrder, string searchString)
+        public async Task<IActionResult> Index(string sortOrder,string currentFilter,string searchString,int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
             ViewData["CurrentFilter"] = searchString;
 
             var projects = from p in _context.Projects
@@ -49,7 +60,9 @@ namespace Project_Management.Controllers
                     projects = projects.OrderBy(p => p.Name);
                     break;
             }
-            return View(await _context.Projects.ToListAsync());
+
+            int pageSize = 3;
+            return View(await PaginatedList<Project>.CreateAsync(projects.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Projects/Details/5
