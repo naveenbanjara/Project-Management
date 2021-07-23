@@ -17,6 +17,7 @@ namespace Project_Management.Models
         }
         public int ID { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public DateTime StartingDate { get; set; }
         public DateTime Deadline { get; set; }
         public DateTime? EndDate { get; set; }
