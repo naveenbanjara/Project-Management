@@ -10,8 +10,7 @@ namespace Project_Management.Models
     {
         [Key]
         public int IssueID { get; set; }
-        public string Filename { get; set; }
-        public string Path { get; set; }
+        public string Filename { get; set; }        
         public Issue Issue { get; set; }
     }
 }
