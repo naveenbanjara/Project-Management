@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Project_Management.Data;
 using Project_Management.Models;
 using System;
 using System.Collections.Generic;
@@ -14,14 +15,21 @@ namespace Project_Management.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ProjectContext _context;
+
+        public HomeController(ILogger<HomeController> logger, ProjectContext projectContext)
         {
             _logger = logger;
+            _context = projectContext;
         }
         
         public IActionResult Index()
         {
-            return View();
+            var recentProjects = from p in _context.Projects
+                                 orderby p.Deadline descending
+                                 select p;
+                
+            return View(recentProjects.Take(3));
         }
 
         [Authorize]
