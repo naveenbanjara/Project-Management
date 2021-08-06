@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,5 +25,7 @@ namespace Project_Management.Models
         public Project Project { get; set; }
         public int ProjectID { get; set; }
         public ICollection<Attachments> Attachments { get; set; }
+        [NotMapped]
+        public List<IFormFile> FormFiles { get; set; }
     }
 }

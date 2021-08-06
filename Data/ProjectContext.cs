@@ -23,6 +23,8 @@ namespace Project_Management.Data
             modelBuilder.Entity<Project>().ToTable("Project");
             modelBuilder.Entity<Issue>().ToTable("Issue");
             modelBuilder.Entity<Attachments>().ToTable("Attachment");
+            modelBuilder.Entity<Attachments>()
+                .HasKey(a => new { a.IssueID });
         }
     }
 }

@@ -107,7 +107,7 @@ namespace Project_Management
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(env.ContentRootPath, "Content")),
+                    Path.Combine(env.ContentRootPath, "Content/Attachments")),
                 RequestPath = "/content"
             });
 

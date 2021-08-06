@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Project_Management.Data;
 using Project_Management.Models;
 
@@ -13,10 +18,18 @@ namespace Project_Management
     public class IssuesController : Controller
     {
         private readonly ProjectContext _context;
+        private readonly long _fileSizeLimit;
+        private readonly string[] _permittedExtensions = { ".jpg",".jpeg",".png" };
+        private readonly string _targetFilePath;
 
-        public IssuesController(ProjectContext context)
+        public IssuesController(ProjectContext context, IConfiguration config, IWebHostEnvironment env)
         {
             _context = context;
+            _fileSizeLimit = config.GetValue<long>("FileSizeLimit");
+
+            // To save physical files to a path provided by configuration:
+            //_targetFilePath = config.GetValue<string>("StoredFilesPath");
+            _targetFilePath = Path.Combine(env.ContentRootPath, "Content/Attachments");
         }
 
         // GET: Issues
@@ -35,35 +48,76 @@ namespace Project_Management
             }
 
             var issue = await _context.Issues
-                .Include(i => i.Project)
+                .Include(i => i.Attachments)                
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (issue == null)
             {
                 return NotFound();
             }
 
+            IEnumerable<Attachments> attachments = issue.Attachments.Where(a => a.IssueID == issue.ID);
+
             return View(issue);
         }
 
         // GET: Issues/Create
         public IActionResult Create()
-        {
-            ViewData["ProjectID"] = new SelectList(_context.Projects, "ID", "ID");
+        {            
+            ViewData["ProjectID"] = new SelectList(_context.Projects, "ID", "ID");            
             return View();
         }
 
-        // POST: Issues/Create
+        // POST: Issues/Create [Bind("Title,Description,Status,StartDate,EndDate,ProjectID")] ,List<IFormFile>? formFiles)
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Description,Status,StartDate,EndDate,ProjectID")] Issue issue)
+        public async Task<IActionResult> Create([Bind("Title,Description,Status,StartDate,EndDate,ProjectID,FormFiles")] Issue issue)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    _context.Add(issue);
+                    ICollection<Attachments> Attachments = new List<Attachments>();
+                    if (issue.FormFiles.Count>0)
+                    {                       
+                        foreach (var formFile in issue.FormFiles)
+                        {
+                            var formFileContent =
+                                await FileHelpers
+                                    .ProcessFormFile<FileUploader>(
+                                        formFile, ModelState, _permittedExtensions,
+                                        _fileSizeLimit);
+
+                            if (!ModelState.IsValid)
+                            {
+                                ViewData["ErrorMessage"] = "Please correct the form.";
+
+                                return View();
+                            }
+                            
+                            var trustedFileNameForFileStorage = Path.GetRandomFileName();
+                            var filePath = Path.Combine(
+                                _targetFilePath, trustedFileNameForFileStorage);
+                            
+
+                            using (var fileStream = System.IO.File.Create(filePath))
+                            {
+                                await fileStream.WriteAsync(formFileContent);
+                                
+                                Attachments attachment = new Attachments();                                
+                                attachment.Filename = trustedFileNameForFileStorage;
+                                Attachments.Add(attachment);
+                                _context.Add(attachment);
+                                // To work directly with the FormFiles, use the following
+                                // instead:
+                                //await formFile.CopyToAsync(fileStream);
+                            }
+                        }
+                        _context.Add(issue);
+                    }
+                    
+                    
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
@@ -179,11 +233,23 @@ namespace Project_Management
                 return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
             }
             
-        }
+        }       
 
         private bool IssueExists(int id)
         {
             return _context.Issues.Any(e => e.ID == id);
         }
     }
+
+    public class FileUploader
+    {
+        [Required]
+        [Display(Name = "File")]
+        public List<IFormFile> FormFiles { get; set; }
+
+        [Display(Name = "Note")]
+        [StringLength(50, MinimumLength = 0)]
+        public string Note { get; set; }
+    }
+
 }
