@@ -48,14 +48,14 @@ namespace Project_Management
             }
 
             var issue = await _context.Issues
-                .Include(i => i.Attachments)                
+                .Include(i => i.FileUploads)                
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (issue == null)
             {
                 return NotFound();
             }
 
-            IEnumerable<Attachments> attachments = issue.Attachments.Where(a => a.IssueID == issue.ID);
+            IEnumerable<FileUpload> files = issue.FileUploads.Where(f => f.IssueID == issue.ID);
 
             return View(issue);
         }
@@ -78,8 +78,12 @@ namespace Project_Management
             {
                 if (ModelState.IsValid)
                 {
-                    ICollection<Attachments> Attachments = new List<Attachments>();
-                    if (issue.FormFiles.Count>0)
+                    _context.Add(issue);
+                    await _context.SaveChangesAsync();
+                    //var ID = issue.ID;
+                    //ICollection<Attachments> Attachments = new List<Attachments>();
+                    List<string> filenames = new List<string>();
+                    if (issue.FormFiles != null)
                     {                       
                         foreach (var formFile in issue.FormFiles)
                         {
@@ -96,7 +100,7 @@ namespace Project_Management
                                 return View();
                             }
                             
-                            var trustedFileNameForFileStorage = Path.GetRandomFileName();
+                            var trustedFileNameForFileStorage = Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + Path.GetExtension(formFile.FileName);
                             var filePath = Path.Combine(
                                 _targetFilePath, trustedFileNameForFileStorage);
                             
@@ -105,20 +109,44 @@ namespace Project_Management
                             {
                                 await fileStream.WriteAsync(formFileContent);
                                 
-                                Attachments attachment = new Attachments();                                
-                                attachment.Filename = trustedFileNameForFileStorage;
-                                Attachments.Add(attachment);
-                                _context.Add(attachment);
+                                FileUpload fileupload = new FileUpload();
+                                fileupload.FileName = trustedFileNameForFileStorage;
+                                filenames.Add(trustedFileNameForFileStorage);
+                                fileupload.IssueID = issue.ID;
+                                //Attachments.Add(attachment);
+                                _context.Add(fileupload);
                                 // To work directly with the FormFiles, use the following
                                 // instead:
                                 //await formFile.CopyToAsync(fileStream);
                             }
                         }
-                        _context.Add(issue);
+                        //_context.Add(issue);
                     }
-                    
-                    
+                   
                     await _context.SaveChangesAsync();
+                    //var ID = issue.ID;
+                    //foreach (var fname in filenames)
+                    //{
+                    //    var att = await _context.Attachments.FirstOrDefaultAsync(f => f.Filename == fname);
+                    //    att.IssueID = ID;
+                    //    if (await TryUpdateModelAsync<Attachments>(
+                    //        att,
+                    //        "",
+                    //        a => a.IssueID))
+                    //    {
+                    //        try
+                    //        {
+                    //            await _context.SaveChangesAsync();
+                    //            //return RedirectToAction(nameof(Index));
+                    //        }
+                    //        catch (DbUpdateException)
+                    //        {
+                    //            ModelState.AddModelError("", "Unable to save changes. " +
+                    //                "Try again, and if the problem persists, " +
+                    //                "see your system administrator.");
+                    //        }
+                    //                }
+                    //}
                     return RedirectToAction(nameof(Index));
                 }
             }

@@ -28,7 +28,7 @@ namespace Project_Management.Controllers
             var recentProjects = from p in _context.Projects
                                  orderby p.Deadline descending
                                  select p;
-                
+
             return View(recentProjects.Take(3));
         }
 

@@ -27,5 +27,6 @@ namespace Project_Management.Models
         public ICollection<Attachments> Attachments { get; set; }
         [NotMapped]
         public List<IFormFile> FormFiles { get; set; }
+        public ICollection<FileUpload> FileUploads { get; set; }
     }
 }
