@@ -1,13 +1,13 @@
-﻿@model PaginatedList<Project_Management.Models.Project>
-
+﻿@*@model PaginatedList<Project_Management.Models.Project>*@
+@model IEnumerable<Project_Management.Models.Project>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Projects";
 }
 
-<h1>Index</h1>
-
+<div id="PlaceHolderHere"></div>
 <p>
-    <a class="btn btn-outline-info" asp-action="Create">Create New</a>
+    <button type="button" class="btn btn-outline-info" data-toggle="ajax-modal" data-target="#addProject" 
+            data-url="@Url.Action("Create")">Create New</button>   
 </p>
 
 <form asp-action="Index" method="get">
@@ -33,7 +33,7 @@
                 Deadline
             </th>
             <th>
-                EndDate
+                End Date
             </th>
             <th>
                 Status
@@ -61,15 +61,25 @@
                     @Html.DisplayFor(modelItem => item.Status)
                 </td>
                 <td>
-                    <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    <button type="button" class="btn btn-outline-secondary" data-toggle="ajax-modal" data-target="#addProject"
+                            data-url="@Url.Action($"Edit/{item.ID}")">
+                        Edit
+                    </button> |
+                    <button type="button" class="btn btn-outline-info" data-toggle="ajax-modal" data-target="#addProject"
+                            data-url="@Url.Action($"Details/{item.ID}")">
+                        Details
+                    </button> |
+                    <button type="button" class="btn btn-outline-danger" data-toggle="ajax-modal" data-target="#addProject"
+                            data-url="@Url.Action($"Delete/{item.ID}")">
+                        Delete
+                    </button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-@{
+
+@*@{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
@@ -87,4 +97,4 @@
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
    class="btn btn-outline-primary @nextDisabled">
     Next
-</a>
+</a>*@

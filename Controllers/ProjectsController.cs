@@ -61,8 +61,9 @@ namespace Project_Management.Controllers
                     break;
             }
 
-            int pageSize = 3;
-            return View(await PaginatedList<Project>.CreateAsync(projects.AsNoTracking(), pageNumber ?? 1, pageSize));
+            //int pageSize = 3;
+            return View(await projects.ToListAsync());
+            //return View(await PaginatedList<Project>.CreateAsync(projects.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Projects/Details/5
@@ -82,13 +83,16 @@ namespace Project_Management.Controllers
                 return NotFound();
             }
 
-            return View(project);
+            return PartialView("_DetailProjectModelPartial",project);
         }
 
         // GET: Projects/Create
+        [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            Project project = new Project();
+            return PartialView("_ProjectModelPartial", project);
+            //return View();
         }
 
         // POST: Projects/Create
@@ -105,6 +109,7 @@ namespace Project_Management.Controllers
                     _context.Add(project);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
+                    //return PartialView("_ProjectModelPartial", project);
                 }
             }
             catch (DbUpdateException)
@@ -131,7 +136,7 @@ namespace Project_Management.Controllers
             {
                 return NotFound();
             }
-            return View(project);
+            return PartialView("_EditProjectModelPartial", project);
         }
 
         // POST: Projects/Edit/5
@@ -166,7 +171,7 @@ namespace Project_Management.Controllers
                 }
             }
 
-            return View(projectToUpdate);
+            return PartialView("_EditProjectModelPartial", projectToUpdate);
         }
 
         // GET: Projects/Delete/5
@@ -192,7 +197,7 @@ namespace Project_Management.Controllers
                     "see your system administrator.";
             }
 
-            return View(project);
+            return PartialView("_DeleteProjectModelPartial", project);
         }
 
         // POST: Projects/Delete/5
@@ -210,6 +215,7 @@ namespace Project_Management.Controllers
                 _context.Projects.Remove(project);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+                
             }
             catch (DbUpdateException)
             {

@@ -4,9 +4,8 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
-<p>
+<div id="PlaceHolderHere"></div>
+<p>    
     <a class="btn btn-outline-info" asp-action="Create">Create New</a>
 </p>
 <table class="table table-hover">
@@ -34,32 +33,41 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Project.ID)
-            </td>
-            <td>
-                <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Project.ID)
+                </td>
+                <td>
+                    <button type="button" class="btn btn-outline-secondary" data-toggle="ajax-modal" data-target="#addIssue"
+                            data-url="@Url.Action($"Edit/{item.ID}")">
+                        Edit
+                    </button> |
+                    <button type="button" class="btn btn-outline-info" data-toggle="ajax-modal" data-target="#addIssue"
+                            data-url="@Url.Action($"Details/{item.ID}")">
+                        Details
+                    </button> |
+                    <button type="button" class="btn btn-outline-danger" data-toggle="ajax-modal" data-target="#addIssue"
+                            data-url="@Url.Action($"Delete/{item.ID}")">
+                        Delete
+                    </button>
+</tr>
+        }
     </tbody>
 </table>

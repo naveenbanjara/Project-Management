@@ -57,13 +57,15 @@ namespace Project_Management
 
             IEnumerable<FileUpload> files = issue.FileUploads.Where(f => f.IssueID == issue.ID);
 
-            return View(issue);
+            return PartialView("_DetailsIssueModelPartial",issue);
         }
 
         // GET: Issues/Create
         public IActionResult Create()
         {            
-            ViewData["ProjectID"] = new SelectList(_context.Projects, "ID", "ID");            
+            ViewData["ProjectID"] = new SelectList(_context.Projects, "ID", "ID");
+            //Issue issue = new Issue();
+            //return PartialView("_IssueModelPartial",issue);            
             return View();
         }
 
@@ -79,9 +81,7 @@ namespace Project_Management
                 if (ModelState.IsValid)
                 {
                     _context.Add(issue);
-                    await _context.SaveChangesAsync();
-                    //var ID = issue.ID;
-                    //ICollection<Attachments> Attachments = new List<Attachments>();
+                    await _context.SaveChangesAsync();                    
                     List<string> filenames = new List<string>();
                     if (issue.FormFiles != null)
                     {                       
@@ -113,40 +113,16 @@ namespace Project_Management
                                 fileupload.FileName = trustedFileNameForFileStorage;
                                 filenames.Add(trustedFileNameForFileStorage);
                                 fileupload.IssueID = issue.ID;
-                                //Attachments.Add(attachment);
                                 _context.Add(fileupload);
                                 // To work directly with the FormFiles, use the following
                                 // instead:
                                 //await formFile.CopyToAsync(fileStream);
                             }
-                        }
-                        //_context.Add(issue);
+                        }                        
                     }
                    
                     await _context.SaveChangesAsync();
-                    //var ID = issue.ID;
-                    //foreach (var fname in filenames)
-                    //{
-                    //    var att = await _context.Attachments.FirstOrDefaultAsync(f => f.Filename == fname);
-                    //    att.IssueID = ID;
-                    //    if (await TryUpdateModelAsync<Attachments>(
-                    //        att,
-                    //        "",
-                    //        a => a.IssueID))
-                    //    {
-                    //        try
-                    //        {
-                    //            await _context.SaveChangesAsync();
-                    //            //return RedirectToAction(nameof(Index));
-                    //        }
-                    //        catch (DbUpdateException)
-                    //        {
-                    //            ModelState.AddModelError("", "Unable to save changes. " +
-                    //                "Try again, and if the problem persists, " +
-                    //                "see your system administrator.");
-                    //        }
-                    //                }
-                    //}
+                 
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -176,7 +152,7 @@ namespace Project_Management
                 return NotFound();
             }
             ViewData["ProjectID"] = new SelectList(_context.Projects, "ID", "ID", issue.ProjectID);
-            return View(issue);
+            return PartialView("_EditIssueModelPartial", issue);
         }
 
         // POST: Issues/Edit/5
@@ -236,7 +212,7 @@ namespace Project_Management
                     "Delete failed. Try again, and if the problem persists " +
                     "see your system administrator.";
             }
-            return View(issue);
+            return PartialView("_DeleteIssueModelPartial",issue);
         }
 
         // POST: Issues/Delete/5
