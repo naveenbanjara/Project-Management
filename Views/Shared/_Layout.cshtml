@@ -4,9 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Project Management</title>
-    <link rel="stylesheet" href="~/css/ruang-admin.css" />
+    <link rel="stylesheet" href="~/css/fontawesome-free/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/ruang-admin.min.css" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />*@
     @*<link rel="stylesheet" href="~/css/ruang-admin.min.css" />*@
     @*<style>
             footer {
@@ -15,14 +16,14 @@
                 width: 100%;
                 white-space: nowrap;
                 line-height: 60px; /* Vertically center the text there */
-            }
+            }<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color: #e3f2fd;">
         </style>*@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color: #e3f2fd;">
+        <nav class="navbar navbar-expand navbar-light bg-navbar topbar mb-4 static-top">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Project Management</a>
+                <a class="navbar-brand text-light" asp-area="" asp-controller="Home" asp-action="Index">Project Management</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -30,13 +31,13 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Index">Projects</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Projects" asp-action="Index">Projects</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Issues" asp-action="Index">Issues</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Issues" asp-action="Index">Issues</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />

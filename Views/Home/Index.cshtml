@@ -22,9 +22,9 @@
                             Status: @Html.DisplayFor(modelItem => item.Status)<br />
                             No. of Issues: @Html.DisplayFor(modelItem => item.Issues.Count)<br />
                         </p>
-                        <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link" asp-controller="Projects" asp-action="Details" asp-route-id="@item.ID">View Details</a>
-                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                        <div class="card-footer alert alert-primary d-flex align-items-center justify-content-between">
+                            <a class="alert-link" asp-controller="Projects" asp-action="Details" asp-route-id="@item.ID">View Details</a>
+                            <div class="alert alert-primary"><i class="fas fa-angle-right"></i></div>
                         </div>
                     </div>
                 </div>
